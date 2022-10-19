@@ -9,9 +9,15 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>oder-data-access</artifactId>
+    <artifactId>order-data-access</artifactId>
 
     <properties>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.food.ordering.system</groupId>
+            <artifactId>order-domain-application-service</artifactId>
+        </dependency>
+    </dependencies>
 </project>
