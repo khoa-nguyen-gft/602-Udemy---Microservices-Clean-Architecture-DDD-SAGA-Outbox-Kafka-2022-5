@@ -10,6 +10,8 @@ import java.util.Objects;
 public class Money {
     private final BigDecimal amount;
 
+    public static final Money ZERO = new Money(BigDecimal.ZERO);
+
     public Money(BigDecimal amount) {
         this.amount = amount;
     }
@@ -38,8 +40,12 @@ public class Money {
         return new Money(setScale(this.amount.subtract(money.amount)));
     }
 
-    public Money multiply(Money money) {
-        return new Money(setScale(this.amount.multiply(money.amount)));
+    public Money multiply(BigDecimal quantity) {
+        return new Money(setScale(this.amount.multiply(quantity)));
+    }
+
+    public Money multiply(int quantity) {
+        return multiply(new BigDecimal(quantity));
     }
 
     private BigDecimal setScale(BigDecimal input) {
@@ -61,5 +67,10 @@ public class Money {
     @Override
     public int hashCode() {
         return Objects.hash(amount);
+    }
+
+    @Override
+    public String toString() {
+        return amount.toString();
     }
 }

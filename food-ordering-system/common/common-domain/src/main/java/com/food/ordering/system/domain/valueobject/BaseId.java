@@ -6,14 +6,14 @@ import java.util.Objects;
  * @author kany
  */
 public abstract class BaseId<T> {
-    private final T value;
+    private final T id;
 
     public BaseId(T value) {
-        this.value = value;
+        this.id = value;
     }
 
-    public T getValue() {
-        return value;
+    public T getId() {
+        return id;
     }
 
     @Override
@@ -25,11 +25,11 @@ public abstract class BaseId<T> {
             return false;
         }
         BaseId<?> baseId = (BaseId<?>) o;
-        return Objects.equals(value, baseId.value);
+        return Objects.equals(id, baseId.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return Objects.hash(id);
     }
 }
