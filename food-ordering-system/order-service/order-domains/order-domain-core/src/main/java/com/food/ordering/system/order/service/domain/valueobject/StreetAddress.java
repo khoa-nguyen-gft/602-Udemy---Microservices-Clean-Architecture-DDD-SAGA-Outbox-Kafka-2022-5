@@ -18,8 +18,8 @@ public class StreetAddress extends BaseId<UUID> {
     }
 
     @Override
-    public UUID getId() {
-        return super.getId();
+    public UUID getValue() {
+        return super.getValue();
     }
 
     public String getStreet() {

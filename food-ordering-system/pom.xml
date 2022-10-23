@@ -33,7 +33,7 @@
             </dependency>
             <dependency>
                 <groupId>com.food.ordering.system</groupId>
-                <artifactId>order-domain-application-service</artifactId>
+                <artifactId>order-domain-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
