@@ -14,6 +14,7 @@ import com.food.ordering.system.order.service.domain.valueobject.TrackingId;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author kany
@@ -43,13 +44,51 @@ public class Order extends AggregateRoot<OrderId> {
         validateItemsPrice();
     }
 
+    public void paid() {
+        if (orderStatus != OrderStatus.PENDING) {
+            throw new OrderDomainException("Order status is not correct state for pay operation!");
+        }
+        orderStatus = OrderStatus.PAID;
+    }
+
+    public void approved() {
+        if (orderStatus != OrderStatus.PAID) {
+            throw new OrderDomainException("Order status is not correct state for approved operation");
+        }
+        orderStatus = OrderStatus.APPROVED;
+    }
+
+    public void initCancel(List<String> failureMessages) {
+        if (orderStatus != OrderStatus.PAID) {
+            throw new OrderDomainException("Order status is not correct state for initCancel operation");
+        }
+        orderStatus = OrderStatus.CANCELLING;
+        updateListFailureMessages(failureMessages);
+    }
+
+    public void cancel(List<String> failureMessages) {
+        if (!(orderStatus == OrderStatus.CANCELLING || orderStatus == OrderStatus.PENDING)) {
+            throw new OrderDomainException("Order status is not correct state for cancel operation");
+        }
+        orderStatus = OrderStatus.CANCELED;
+        updateListFailureMessages(failureMessages);
+    }
+
+    private void updateListFailureMessages(List<String> failureMessages) {
+        if (this.failureMessages != null && failureMessages != null) {
+            failureMessages.addAll(failureMessages.stream().filter(me -> !me.isEmpty()).collect(Collectors.toList()));
+        }
+        if (this.failureMessages == null) {
+            this.failureMessages = failureMessages;
+        }
+    }
+
     private void initializeOrderItems() {
         long orderItemId = 1;
         for (OrderItem orderItem : items) {
             orderItem.initializeOrderItem(super.getId(), new OrderItemId(orderItemId++));
         }
     }
-
 
     private void validateTotalPrice() {
         if (price == null || !price.isGreaterThanZero()) {
@@ -58,7 +97,7 @@ public class Order extends AggregateRoot<OrderId> {
     }
 
     private void validateInitialOrder() {
-        if (orderStatus == null || getId() == null) {
+        if (orderStatus != null || getId() != null) {
             throw new OrderDomainException("Order is not correct state for initialization!");
         }
     }

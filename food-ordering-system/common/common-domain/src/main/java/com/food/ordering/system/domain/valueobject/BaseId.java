@@ -12,7 +12,7 @@ public abstract class BaseId<T> {
         this.id = value;
     }
 
-    public T getId() {
+    public T getValue() {
         return id;
     }
 
