@@ -10,11 +10,22 @@ public class StreetAddress extends BaseId<UUID> {
     private final String postalCode;
     private final String city;
 
-    public StreetAddress( UUID id,String street, String postalCode, String city) {
+    public StreetAddress(UUID id, String street, String postalCode, String city) {
         super(id);
         this.street = street;
         this.postalCode = postalCode;
         this.city = city;
+    }
+
+    private StreetAddress(Builder builder) {
+        super(builder.id);
+        street = builder.street;
+        postalCode = builder.postalCode;
+        city = builder.city;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     @Override
@@ -49,5 +60,44 @@ public class StreetAddress extends BaseId<UUID> {
     @Override
     public int hashCode() {
         return Objects.hash(street, postalCode, city);
+    }
+
+
+    public static final class Builder {
+        private UUID id;
+        private String street;
+        private String postalCode;
+        private String city;
+
+        private Builder() {
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(UUID id) {
+            id = id;
+            return this;
+        }
+
+        public Builder street(String val) {
+            street = val;
+            return this;
+        }
+
+        public Builder postalCode(String val) {
+            postalCode = val;
+            return this;
+        }
+
+        public Builder city(String val) {
+            city = val;
+            return this;
+        }
+
+        public StreetAddress build() {
+            return new StreetAddress(this);
+        }
     }
 }

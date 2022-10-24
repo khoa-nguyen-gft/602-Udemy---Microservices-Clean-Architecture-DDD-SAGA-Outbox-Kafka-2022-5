@@ -178,6 +178,11 @@ public class Order extends AggregateRoot<OrderId> {
         setFailureMessages(builder.failureMessages);
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
+
     public static final class Builder {
         private OrderId orderId;
         private CustomerId customerId;
@@ -196,9 +201,6 @@ public class Order extends AggregateRoot<OrderId> {
             return new Order(this);
         }
 
-        public static Builder newBuilder() {
-            return new Builder();
-        }
 
 
         public Builder orderId(OrderId orderId) {

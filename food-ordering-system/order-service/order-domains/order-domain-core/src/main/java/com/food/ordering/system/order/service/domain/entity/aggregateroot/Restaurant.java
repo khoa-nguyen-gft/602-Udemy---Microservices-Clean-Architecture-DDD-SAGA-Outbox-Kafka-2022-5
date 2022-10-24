@@ -20,18 +20,22 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
         active = builder.active;
     }
 
-    public void validateRestaurantIsActive(){
-        if(!isActive()){
+    public void validateRestaurantIsActive() {
+        if (!isActive()) {
             throw new OrderDomainException("Restaurant with Id " + this.getId().getValue() + " is currently not active");
         }
     }
 
     private boolean isActive() {
-        return active == true;
+        return active;
     }
 
     public List<Product> getProducts() {
         return products;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static final class Builder {
@@ -42,11 +46,15 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
         private Builder() {
         }
 
+        public Restaurant build() {
+            return new Restaurant(this);
+        }
+
         public static Builder newBuilder() {
             return new Builder();
         }
 
-        public Builder id(RestaurantId val) {
+        public Builder restaurantId(RestaurantId val) {
             id = val;
             return this;
         }
@@ -61,8 +69,5 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
             return this;
         }
 
-        public Restaurant build() {
-            return new Restaurant(this);
-        }
     }
 }
