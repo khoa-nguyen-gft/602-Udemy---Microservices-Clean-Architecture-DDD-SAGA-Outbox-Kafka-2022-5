@@ -1,8 +1,6 @@
-package com.food.ordering.system.order.service.domain.ports;
+package com.food.ordering.system.order.service.domain;
 
-import com.food.ordering.system.order.service.domain.OrderDomainService;
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderCommand;
-import com.food.ordering.system.order.service.domain.dto.create.CreateOrderResponse;
 import com.food.ordering.system.order.service.domain.entity.aggregateroot.Customer;
 import com.food.ordering.system.order.service.domain.entity.aggregateroot.Order;
 import com.food.ordering.system.order.service.domain.entity.aggregateroot.Restaurant;
@@ -14,13 +12,14 @@ import com.food.ordering.system.order.service.domain.ports.output.repository.Ord
 import com.food.ordering.system.order.service.domain.ports.output.repository.RestaurantRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
 @Component
-public class OrderCreateCommandHandler {
+public class OrderCreateHelper {
 
     private final OrderDomainService orderDomainService;
 
@@ -32,11 +31,11 @@ public class OrderCreateCommandHandler {
 
     private final OrderDataMapper orderDataMapper;
 
-    public OrderCreateCommandHandler(OrderDomainService orderDomainService,
-                                     OrderRepository orderRepository,
-                                     CustomerRepository customerRepository,
-                                     RestaurantRepository restaurantRepository,
-                                     OrderDataMapper orderDataMapper) {
+    public OrderCreateHelper(OrderDomainService orderDomainService,
+                             OrderRepository orderRepository,
+                             CustomerRepository customerRepository,
+                             RestaurantRepository restaurantRepository,
+                             OrderDataMapper orderDataMapper) {
         this.orderDomainService = orderDomainService;
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
@@ -44,16 +43,18 @@ public class OrderCreateCommandHandler {
         this.orderDataMapper = orderDataMapper;
     }
 
-    public CreateOrderResponse createOrder(CreateOrderCommand request) {
+    @Transactional
+    public OrderCreatedEvent persistOrder(CreateOrderCommand request) {
         checkCustomer(request.getCustomerId());
         Restaurant restaurant = checkRestaurant(request);
         Order order = orderDataMapper.createOrderCommandToOrder(request);
         OrderCreatedEvent orderCreatedEvent = orderDomainService.validateAndInitiateOrder(order, restaurant);
-        Order orderResult = saveOrder(order);
-        log.info("Order is create with order id: {}", orderResult.getId().getValue());
+        saveOrder(order);
+        log.info("Order is create with order id: {}", orderCreatedEvent.getOrder().getId().getValue());
 
-        return orderDataMapper.orderToCreateOrderResponse(orderResult, "");
+        return orderCreatedEvent;
     }
+
 
     private Order saveOrder(Order order) {
         Order orderResult = orderRepository.save(order);
