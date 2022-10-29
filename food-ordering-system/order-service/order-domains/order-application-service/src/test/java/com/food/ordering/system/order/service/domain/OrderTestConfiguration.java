@@ -44,7 +44,7 @@ public class OrderTestConfiguration {
     }
 
     @Bean
-    public OrderDomainService orderDomainService() {
-        return new OrderDomainServiceImpl();
+    public OrderDomainCoreService orderDomainService() {
+        return new OrderDomainCoreServiceImpl();
     }
 }

@@ -70,4 +70,12 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
         }
 
     }
+
+    @Override
+    public String toString() {
+        return "Restaurant{" +
+                "products=" + products +
+                ", active=" + active +
+                '}';
+    }
 }

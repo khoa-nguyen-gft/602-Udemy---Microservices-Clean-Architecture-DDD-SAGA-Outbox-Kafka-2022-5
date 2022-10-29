@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author kany
  */
-public interface OrderDomainService {
+public interface OrderDomainCoreService {
 
     /**
      * validate and initiate order

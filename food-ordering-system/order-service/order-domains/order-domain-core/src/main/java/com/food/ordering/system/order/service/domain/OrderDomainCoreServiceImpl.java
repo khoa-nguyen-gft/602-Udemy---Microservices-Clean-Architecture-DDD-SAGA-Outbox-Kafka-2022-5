@@ -16,7 +16,7 @@ import java.util.List;
  * @author kany
  */
 @Slf4j
-public class OrderDomainServiceImpl implements OrderDomainService {
+public class OrderDomainCoreServiceImpl implements OrderDomainCoreService {
 
     public static final String UTC = "UTC";
 

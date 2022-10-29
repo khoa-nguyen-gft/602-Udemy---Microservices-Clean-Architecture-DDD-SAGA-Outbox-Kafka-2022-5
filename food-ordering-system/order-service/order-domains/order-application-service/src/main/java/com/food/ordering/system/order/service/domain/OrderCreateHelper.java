@@ -21,7 +21,7 @@ import java.util.UUID;
 @Component
 public class OrderCreateHelper {
 
-    private final OrderDomainService orderDomainService;
+    private final OrderDomainCoreService orderDomainService;
 
     private final OrderRepository orderRepository;
 
@@ -31,7 +31,7 @@ public class OrderCreateHelper {
 
     private final OrderDataMapper orderDataMapper;
 
-    public OrderCreateHelper(OrderDomainService orderDomainService,
+    public OrderCreateHelper(OrderDomainCoreService orderDomainService,
                              OrderRepository orderRepository,
                              CustomerRepository customerRepository,
                              RestaurantRepository restaurantRepository,
@@ -69,6 +69,7 @@ public class OrderCreateHelper {
 
     private Restaurant checkRestaurant(CreateOrderCommand command) {
         Restaurant restaurant = orderDataMapper.createOrderCommandToRestaurant(command);
+        log.info("checkRestaurant with restaurant Id: " + restaurant);
         Optional<Restaurant> restaurantInformation = restaurantRepository.findRestaurantInformation(restaurant);
         if (restaurantInformation.isEmpty()) {
             log.warn("could not find restaurant with restaurant Id: " + command.getRestaurantId());
@@ -78,6 +79,7 @@ public class OrderCreateHelper {
     }
 
     private void checkCustomer(UUID customerId) {
+        log.info("checkCustomer with customer Id: " + customerId);
         Optional<Customer> customer = customerRepository.findCustomer(customerId);
         if (customer.isEmpty()) {
             log.warn("could not find customer with customer Id: " + customerId);
