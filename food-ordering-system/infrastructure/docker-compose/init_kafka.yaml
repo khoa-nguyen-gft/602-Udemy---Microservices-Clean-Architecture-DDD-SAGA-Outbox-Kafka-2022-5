@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+  init-kafka:
+    image: confluentinc/cp-kafka:${KAFKA_VERSION:-latest}
+    entrypoint: ['/bin/sh', '-c']
+    command: |
+      "
+      # block until kafka is readable
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --list
+
+      echo -e 'deleteing kafka topics'
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --topic payment-request --delete --if-exists
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --topic payment-response --delete --if-exists
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --topic restaurant-approve-request --delete --if-exists
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --topic restaurant-approve-response --delete --if-exists
+
+      echo -e 'creating kafka topics'
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --create --if-not-exists --topic payment-request --replication-factor 3 --partitions 3
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --create --if-not-exists --topic payment-response --replication-factor 3 --partitions 3
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --create --if-not-exists --topic restaurant-approve-request --replication-factor 3 --partitions 3
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --create --if-not-exists --topic restaurant-approve-response --replication-factor 3 --partitions 3
+
+      echo -e 'successfully created the following topics:'
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --list
+
+      "
+    networks:
+      - ${GLOBAL_NETWORK:-kafka}
